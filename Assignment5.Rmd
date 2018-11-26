@@ -18,8 +18,14 @@ library(effsize)
 #Reading in the data frames
 grad_enrollment = read_csv("Grad enrollment 1967 - 2015.csv")
 doctoral_salary = read_csv("Median salary for doctoral recipients.csv")
+#This csv need further editing 
 phd_field_gender = read_csv("PhDs by Field 1985 - 2015.csv")
 faculty_salary = read_csv("Faculty salary data (2008 - 2009 survey).csv")
 
+#For your viewing pleasure 
+#View(grad_enrollment)
+#View(doctoral_salary)
+#View(phd_field_gender)
+#View(faculty_salary)
 ```
 
