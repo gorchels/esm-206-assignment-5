@@ -55,12 +55,12 @@ grad_m_scatter
 #Regression to look at total of males vs females in grad school from 1967-2015
 
 #linear model for women
-women_model <- lm(year ~ total_women, data = grad_enrollment)
+women_model <- lm(total_women ~ year, data = grad_enrollment)
 women_model
 summary(women_model)
 
 #linear model for men
-men_model <- lm(year ~ total_men, data = grad_enrollment)
+men_model <- lm(total_men ~ year, data = grad_enrollment)
 men_model
 summary(men_model)
 
@@ -73,6 +73,23 @@ plot(women_model)
 plot(men_model)
 
 #everythig looks weird here not sure this is right!
+```
+
+
+```{r}
+#line graph
+grad_enrol_graph <- ggplot(grad_enrollment, aes(year)) +
+  geom_point(aes(y = total_women, color = "Women")) +
+  geom_point(aes(y = total_men, color = "Men")) +
+  theme_classic() +
+  geom_smooth(method = lm, se = TRUE, size = 0.5, (aes(y = total_women)), color = "turquoise") +
+  geom_smooth(method = lm, se = TRUE, size = 0.5, (aes(y = total_men)), color = "orange") +
+  scale_x_continuous() +
+  labs(x = "Year", y = "Number of Graduate Students Enrolled") #need to fix ledgend and colors
+
+grad_enrol_graph
+
+
 ```
 
 
