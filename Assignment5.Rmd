@@ -15,6 +15,8 @@ library(tidyverse)
 library(kableExtra)
 library(effsize)
 library(stargazer)
+library(car)
+
 #Reading in the data frames
 grad_enrollment = read_csv("Grad enrollment 1967 - 2015.csv")
 doctoral_salary = read_csv("Median salary for doctoral recipients.csv")
@@ -47,6 +49,13 @@ salary_mod
 ```
 
 ```{r}
+#Assistant professors < Acossiate professors < Full professor
+plot(salary_mod_1)
+#hmmm it seems there is some heterdasicity, it also has some issues with residual normality 
+vif(salary_mod_1)
+```
 
+```{r}
+#Making a model that excludes years
 ```
 
