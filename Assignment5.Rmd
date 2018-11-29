@@ -139,7 +139,7 @@ faculty_sal_prof = faculty_salary %>%
 interaction_graph = ggplot(faculty_salary, aes(x = years_faculty_service, y = salary)+
   geom_point(data = faculty_sal_acoc, aes(x = years_faculty_service, y = salary))+
   geom_point(data = faculty_sal_asst, aes(x = years_faculty_service, y = salary))
-
+#Struggling here
 interaction_graph
 ```
 
