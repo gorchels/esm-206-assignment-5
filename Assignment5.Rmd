@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(kableExtra)
 library(effsize)
-
+library(stargazer)
 #Reading in the data frames
 grad_enrollment = read_csv("Grad enrollment 1967 - 2015.csv")
 doctoral_salary = read_csv("Median salary for doctoral recipients.csv")
@@ -40,7 +40,13 @@ results of the model – make sure you describe interesting findings in text). Y
 
 ```{r}
 #Starting the linear model 
-salary_mod_1 = lm(salary~sex+years_faculty_service+Bathrooms+SqFt+PricePerSqFt+Status, data = homes_sub)
+salary_mod_1 = lm(salary~sex+years_faculty_service+faculty_rank+discipline, data = faculty_salary)
+summary(salary_mod_1)
+
+salary_mod
+```
+
+```{r}
 
 ```
 
