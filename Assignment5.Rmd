@@ -24,6 +24,9 @@ doctoral_salary = read_csv("Median salary for doctoral recipients.csv")
 phd_field_gender = read_csv("PhDs by Field 1985 - 2015.csv")
 faculty_salary = read_csv("Faculty salary data (2008 - 2009 survey).csv")
 
+#formatted  phd_field_gender
+rev_phd_field = read_csv("PhDs_rev.csv")
+
 #For your viewing pleasure 
 #View(grad_enrollment)
 #View(doctoral_salary)
@@ -91,6 +94,18 @@ grad_enrol_graph
 
 
 ```
+##2) Shifts in female PhD recipients by field (1985, 2000, and 2015). 
+Describe if and how there was a shift in PhDs awarded to females in four fields (Physical and Earth Sciences, Engineering, Education,
+and Humanities & Arts) in 1985, 2000, and 2015. Describe your results statistically, in a graph or table, and in text. Note: There are several ways that you can interpret this question. You are invited to decide
+which you think is/are most interesting. Just be really clear about what you are asking/answering in
+your report.
+
+```{r}
+# First want to create a female subset with only years 1985, 2000, and 2015
+rev_phd_field$Field_of_study_and_sex <- factor(rev_phd_field$Field_of_study_and_sex)
+
+female_field <- filter(rev_phd_field, Field_of_study_and_sex %in% c("Female_all","Female_life_sci","Female_phy_sci","Female_math","Female_ss", "Female_eng","Female_ed","Female_art","Female_other"))
+```
 
 
 3) Male and female salaries for starting postdoctoral and other employment positions (2015). Compare median salaries for male and female doctorate recipients in 2015. Answer these two questions:Does median salary differ significantly between male and female starting postdoc positions? Does median salary differ significantly between male and female PhD recipients in non-postdoc employment positions?
@@ -108,7 +123,7 @@ results of the model – make sure you describe interesting findings in text). Y
 salary_mod_1 = lm(salary~sex+years_faculty_service+faculty_rank+discipline, data = faculty_salary)
 summary(salary_mod_1)
 
-salary_mod
+salary_mod_1
 ```
 
 ```{r}
@@ -136,10 +151,10 @@ faculty_sal_asst = faculty_salary %>%
 faculty_sal_prof = faculty_salary %>% 
   filter(faculty_rank == "Prof")
 
-interaction_graph = ggplot(faculty_salary, aes(x = years_faculty_service, y = salary)+
+interaction_graph = ggplot(faculty_salary, aes(x = years_faculty_service, y = salary))+
   geom_point(data = faculty_sal_acoc, aes(x = years_faculty_service, y = salary))+
   geom_point(data = faculty_sal_asst, aes(x = years_faculty_service, y = salary))
 #Struggling here
-interaction_graph
+#interaction_graph
 ```
 
