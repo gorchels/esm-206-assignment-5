@@ -331,7 +331,21 @@ grad_enrol_graph</code></pre>
 <pre class="r"><code># First want to create a female subset with only years 1985, 2000, and 2015
 rev_phd_field$Field_of_study_and_sex &lt;- factor(rev_phd_field$Field_of_study_and_sex)
 
-female_field &lt;- filter(rev_phd_field, Field_of_study_and_sex %in% c(&quot;Female_all&quot;,&quot;Female_life_sci&quot;,&quot;Female_phy_sci&quot;,&quot;Female_math&quot;,&quot;Female_ss&quot;, &quot;Female_eng&quot;,&quot;Female_ed&quot;,&quot;Female_art&quot;,&quot;Female_other&quot;))</code></pre>
+female_field &lt;- filter(rev_phd_field, Field_of_study_and_sex %in% c(&quot;Female_life_sci&quot;,&quot;Female_phy_sci&quot;,&quot;Female_math&quot;,&quot;Female_ss&quot;, &quot;Female_eng&quot;,&quot;Female_ed&quot;,&quot;Female_art&quot;,&quot;Female_other&quot;))
+
+# Note, I also removed &quot;Female_all&quot;
+
+# Now to remove the %'s
+
+#female_absolute_field &lt;- select(female_field, &quot;1985_Number&quot;, &quot;2000_Number&quot;, &quot;2015_Number&quot;) %&gt;% 
+  make.names(c(&quot;Female_life_sci&quot;,&quot;Female_phy_sci&quot;,&quot;Female_math&quot;,&quot;Female_ss&quot;, &quot;Female_eng&quot;,&quot;Female_ed&quot;,&quot;Female_art&quot;,&quot;Female_other&quot;))</code></pre>
+<pre><code>## [1] &quot;Female_life_sci&quot; &quot;Female_phy_sci&quot;  &quot;Female_math&quot;     &quot;Female_ss&quot;      
+## [5] &quot;Female_eng&quot;      &quot;Female_ed&quot;       &quot;Female_art&quot;      &quot;Female_other&quot;</code></pre>
+<pre class="r"><code>#f_phd_prop_all &lt;- prop.table(as.matrix(female_absolute_field, make.names.value= c(&quot;Female_life_sci&quot;,&quot;Female_phy_sci&quot;,&quot;Female_math&quot;,&quot;Female_ss&quot;, &quot;Female_eng&quot;,&quot;Female_ed&quot;,&quot;Female_art&quot;,&quot;Female_other&quot;)), 1)
+
+#f_phd_chi_all &lt;- chisq.test(female_absolute_field)
+
+#f_phd_chi_all</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li><p>Male and female salaries for starting postdoctoral and other employment positions (2015). Compare median salaries for male and female doctorate recipients in 2015. Answer these two questions:Does median salary differ significantly between male and female starting postdoc positions? Does median salary differ significantly between male and female PhD recipients in non-postdoc employment positions?</p></li>
 <li><p>Exploring academic salaries for professors in U.S. colleges. Explore relationships between variables in the ‘Faculty salary data (2008 - 2009 survey)’ dataset. Develop a model describing faculty salary based on data for faculty sex, rank, years in current position, field, and number of years since doctoral degree was earned. You should make decisions regarding which variables should remain in your final model. Describe the results qualitatively and quantitatively (i.e., don’t just report the statistical results of the model – make sure you describe interesting findings in text). You can also discuss any concerns that you have with the model(s) you present, if any.</p></li>

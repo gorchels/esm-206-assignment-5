@@ -104,7 +104,21 @@ your report.
 # First want to create a female subset with only years 1985, 2000, and 2015
 rev_phd_field$Field_of_study_and_sex <- factor(rev_phd_field$Field_of_study_and_sex)
 
-female_field <- filter(rev_phd_field, Field_of_study_and_sex %in% c("Female_all","Female_life_sci","Female_phy_sci","Female_math","Female_ss", "Female_eng","Female_ed","Female_art","Female_other"))
+female_field <- filter(rev_phd_field, Field_of_study_and_sex %in% c("Female_life_sci","Female_phy_sci","Female_math","Female_ss", "Female_eng","Female_ed","Female_art","Female_other"))
+
+# Note, I also removed "Female_all"
+
+# Now to remove the %'s
+
+#female_absolute_field <- select(female_field, "1985_Number", "2000_Number", "2015_Number") %>% 
+  make.names(c("Female_life_sci","Female_phy_sci","Female_math","Female_ss", "Female_eng","Female_ed","Female_art","Female_other"))
+
+
+#f_phd_prop_all <- prop.table(as.matrix(female_absolute_field, make.names.value= c("Female_life_sci","Female_phy_sci","Female_math","Female_ss", "Female_eng","Female_ed","Female_art","Female_other")), 1)
+
+#f_phd_chi_all <- chisq.test(female_absolute_field)
+
+#f_phd_chi_all
 ```
 
 
