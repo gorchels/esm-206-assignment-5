@@ -128,6 +128,26 @@ f_phd_chi_all
 ```
 
 ```{r}
+# Making a nice table
+
+trim_number_all <- subset(female_absolute_field, rownames(f_phd_prop_all) %in% c("Female_phy_sci","Female_eng", "Female_ed","Female_art"))
+
+rownames(trim_number_all) <- c("Female_phy_sci","Female_eng","Female_ed","Female_art")
+
+trim_prop_all <- subset(f_phd_prop_all, rownames(f_phd_prop_all) %in% c("Female_phy_sci","Female_eng", "Female_ed","Female_art"))
+  
+chi_table_all <- kable(trim_number_all,
+                       col.name = c("1985", "2000", "2015"),
+                       caption = "Changes in Fields of Study") %>% 
+  kable_styling(c("striped","border"))  # %>% 
+ 
+
+chi_table_all
+```
+
+
+
+```{r}
 # This run will look at just the 4 specified fields
 
 
