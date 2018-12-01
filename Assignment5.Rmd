@@ -27,6 +27,8 @@ faculty_salary = read_csv("Faculty salary data (2008 - 2009 survey).csv")
 #formatted  phd_field_gender
 rev_phd_field = read_csv("PhDs_rev.csv")
 
+phd_transpose = read_csv("phd_transpose.csv")
+
 #For your viewing pleasure 
 #View(grad_enrollment)
 #View(doctoral_salary)
@@ -101,6 +103,7 @@ which you think is/are most interesting. Just be really clear about what you are
 your report.
 
 ```{r}
+
 # First want to create a female subset with only years 1985, 2000, and 2015
 rev_phd_field$Field_of_study_and_sex <- factor(rev_phd_field$Field_of_study_and_sex)
 
@@ -115,12 +118,48 @@ female_absolute_field <- select(female_field, "1985_Number", "2000_Number", "201
 rownames(female_absolute_field) <- c("Female_life_sci","Female_phy_sci","Female_math","Female_ss", "Female_eng","Female_ed","Female_art","Female_other")
 
 
-f_phd_prop_all <- prop.table(as.matrix(female_absolute_field), 1)
+f_phd_prop_all <- prop.table(as.matrix(female_absolute_field), 2)
 
 f_phd_chi_all <- chisq.test(female_absolute_field)
 
 f_phd_chi_all
+
+# p-value = < 2.2 e -16 so DEFINETLY a significant difference
 ```
+
+```{r}
+# This run will look at just the 4 specified fields
+
+
+```
+
+
+```{r}
+
+# I think this crunk is meaningless now...
+
+#phd_transpose$Field_of_study_and_sex <- factor(rev_phd_field$Field_of_study_and_sex)
+
+female_field_t <- select(phd_transpose, Field_of_study_and_sex, #%in%
+                         "Female_life_sci","Female_phy_sci","Female_math","Female_ss", "Female_eng","Female_ed","Female_art","Female_other")
+
+# Note, I also removed "Female_all"
+
+# Now to remove the %'s
+
+female_absolute_field_t <- filter(female_field_t,Field_of_study_and_sex %in% c("1985_Number", "2000_Number", "2015_Number")) 
+
+rownames(female_absolute_field_t) <- c("1985_Number","2000_Number", "2015_Number")
+
+phd_f_row <- select(female_absolute_field_t, "Female_life_sci":"Female_other")
+
+f_phd_t_prop_all <- prop.table(as.matrix(phd_f_row), 3)
+
+f_phd_t_chi_all <- chisq.test(female_absolute_field_t)
+
+f_phd_chi_all
+```
+
 
 
 3) Male and female salaries for starting postdoctoral and other employment positions (2015). Compare median salaries for male and female doctorate recipients in 2015. Answer these two questions:Does median salary differ significantly between male and female starting postdoc positions? Does median salary differ significantly between male and female PhD recipients in non-postdoc employment positions?
