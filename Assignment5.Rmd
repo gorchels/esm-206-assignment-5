@@ -63,11 +63,15 @@ grad_m_scatter
 women_model <- lm(total_women ~ year, data = grad_enrollment)
 women_model
 summary(women_model)
+women_r <- cor.test(grad_enrollment$total_women, grad_enrollment$year)
+women_r
 
 #linear model for men
 men_model <- lm(total_men ~ year, data = grad_enrollment)
 men_model
 summary(men_model)
+men_r <- cor.test(grad_enrollment$total_men, grad_enrollment$year)
+men_r
 
 ```
 
