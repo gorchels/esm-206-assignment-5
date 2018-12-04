@@ -213,7 +213,7 @@ non_post_doc_test
 
 ```{r}
 #Starting the linear model 
-salary_mod_1 = lm(salary~sex+years_faculty_service+faculty_rank+discipline, data = faculty_salary)
+salary_mod_1 = lm(salary~sex+years_faculty_service+years_since_PhD+faculty_rank+discipline, data = faculty_salary)
 summary(salary_mod_1)
 
 salary_mod_1
@@ -225,6 +225,7 @@ plot(salary_mod_1)
 #hmmm it seems there is some heterdasicity, it also has some issues with residual normality 
 vif(salary_mod_1)
 AIC(salary_mod_1)
+
 ```
 
 ```{r}
@@ -232,6 +233,8 @@ AIC(salary_mod_1)
 salary_mod_2 = lm(salary~sex+faculty_rank+discipline, data = faculty_salary)
 summary(salary_mod_2)
 AIC(salary_mod_2)
+plot(salary_mod_2)
+
 ```
 
 ```{r}
@@ -254,7 +257,8 @@ interaction_graph
 #Struggling here
 #interaction_graph
 ```
-```{r}
-stargazer(salary_mod_2, type = "html")
+```{r, results='asis'}
+constillations = stargazer(salary_mod_2, type = "html")
+constillations 
 ```
 
