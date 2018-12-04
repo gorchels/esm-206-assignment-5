@@ -181,16 +181,34 @@ f_phd_t_prop_all <- prop.table(as.matrix(phd_f_row), 3)
 
 f_phd_t_chi_all <- chisq.test(female_absolute_field_t)
 
-f_phd_chi_all
+#f_phd_chi_all
 ```
 
 
 
 3) Male and female salaries for starting postdoctoral and other employment positions (2015). Compare median salaries for male and female doctorate recipients in 2015. Answer these two questions:Does median salary differ significantly between male and female starting postdoc positions? Does median salary differ significantly between male and female PhD recipients in non-postdoc employment positions?
 
+```{r}
+post_doc_hist = ggplot(doctoral_salary, aes(x = men_postdoc))+
+  geom_histogram()
+post_doc_hist
+post_doc_qq = ggplot(doctoral_salary, aes(x = men_postdoc))+
+  geom_qq()
+post_doc_qq
+```
+
 
 ```{r}
 
+#var.test(doctoral_salary$men_employment,doctoral_salary$women_employment) #Variances are not equal 
+#var.test(doctoral_salary$men_postdoc,doctoral_salary$women_postdoc) #Variances are not equal 
+
+non_post_doc_test = wilcox.test(doctoral_salary$men_employment,doctoral_salary$women_employment, paired = TRUE)
+
+post_doc_test = wilcox.test(doctoral_salary$men_postdoc,doctoral_salary$women_postdoc, paired = TRUE)
+
+post_doc_test
+non_post_doc_test
 ```
 
 4) Exploring academic salaries for professors in U.S. colleges. Explore relationships between variables in the ‘Faculty salary data (2008 - 2009 survey)’ dataset. Develop a model describing faculty salary based on data for faculty sex, rank, years in current position, field, and number of years since doctoral degree was earned. You should make decisions regarding which variables should remain in your final model. Describe the results qualitatively and quantitatively (i.e., don’t just report the statistical
@@ -230,9 +248,13 @@ faculty_sal_prof = faculty_salary %>%
   filter(faculty_rank == "Prof")
 
 interaction_graph = ggplot(faculty_salary, aes(x = years_faculty_service, y = salary))+
-  geom_point(data = faculty_sal_acoc, aes(x = years_faculty_service, y = salary))+
-  geom_point(data = faculty_sal_asst, aes(x = years_faculty_service, y = salary))
+  geom_line(data = faculty_sal_acoc, aes(x = years_faculty_service, y = salary))+
+  geom_line(data = faculty_sal_asst, aes(x = years_faculty_service, y = salary))
+interaction_graph
 #Struggling here
 #interaction_graph
+```
+```{r}
+stargazer(salary_mod_2, type = "html")
 ```
 
