@@ -164,22 +164,22 @@ chi_table_all
 
 #phd_transpose$Field_of_study_and_sex <- factor(rev_phd_field$Field_of_study_and_sex)
 
-female_field_t <- select(phd_transpose, Field_of_study_and_sex, #%in%
-                         "Female_life_sci","Female_phy_sci","Female_math","Female_ss", "Female_eng","Female_ed","Female_art","Female_other")
+#female_field_t <- select(phd_transpose, Field_of_study_and_sex, #%in%
+                         #"Female_life_sci","Female_phy_sci","Female_math","Female_ss", #"Female_eng","Female_ed","Female_art","Female_other")
 
 # Note, I also removed "Female_all"
 
 # Now to remove the %'s
 
-female_absolute_field_t <- filter(female_field_t,Field_of_study_and_sex %in% c("1985_Number", "2000_Number", "2015_Number")) 
+#female_absolute_field_t <- filter(female_field_t,Field_of_study_and_sex %in% c("1985_Number", "2000_Number", "2015_Number")) 
 
-rownames(female_absolute_field_t) <- c("1985_Number","2000_Number", "2015_Number")
+#rownames(female_absolute_field_t) <- c("1985_Number","2000_Number", "2015_Number")
 
-phd_f_row <- select(female_absolute_field_t, "Female_life_sci":"Female_other")
+#phd_f_row <- select(female_absolute_field_t, "Female_life_sci":"Female_other")
 
-f_phd_t_prop_all <- prop.table(as.matrix(phd_f_row), 3)
+#f_phd_t_prop_all <- prop.table(as.matrix(phd_f_row), 3)
 
-f_phd_t_chi_all <- chisq.test(female_absolute_field_t)
+#f_phd_t_chi_all <- chisq.test(female_absolute_field_t)
 
 #f_phd_chi_all
 ```
@@ -194,7 +194,7 @@ post_doc_hist = ggplot(doctoral_salary, aes(x = men_postdoc))+
 post_doc_hist
 post_doc_qq = ggplot(doctoral_salary, aes(x = men_postdoc))+
   geom_qq()
-post_doc_qq
+#post_doc_qq
 ```
 
 
