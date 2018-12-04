@@ -210,6 +210,9 @@ post_doc_test = wilcox.test(doctoral_salary$men_postdoc,doctoral_salary$women_po
 post_doc_test
 non_post_doc_test
 ```
+```{r}
+
+```
 
 ```{r}
 #Starting the linear model 
@@ -234,13 +237,15 @@ salary_mod_2 = lm(salary~sex+faculty_rank+discipline, data = faculty_salary)
 summary(salary_mod_2)
 AIC(salary_mod_2)
 plot(salary_mod_2)
+vif(salary_mod_2)
 
 ```
 
 ```{r}
-salary_mod_3 = lm(salary~sex+years_faculty_service+discipline, data = faculty_salary)
+salary_mod_3 = lm(salary~sex+faculty_rank+years_faculty_service+discipline, data = faculty_salary)
 summary(salary_mod_3)
 AIC(salary_mod_3)
+vif(salary_mod_3)
 ```
 ```{r}
 faculty_sal_acoc = faculty_salary %>% 
@@ -250,15 +255,24 @@ faculty_sal_asst = faculty_salary %>%
 faculty_sal_prof = faculty_salary %>% 
   filter(faculty_rank == "Prof")
 
-interaction_graph = ggplot(faculty_salary, aes(x = years_faculty_service, y = salary))+
-  geom_line(data = faculty_sal_acoc, aes(x = years_faculty_service, y = salary))+
-  geom_line(data = faculty_sal_asst, aes(x = years_faculty_service, y = salary))
-interaction_graph
-#Struggling here
-#interaction_graph
 ```
 ```{r, results='asis'}
 constillations = stargazer(salary_mod_2, type = "html")
 constillations 
+```
+
+
+
+```{r}
+salary_mod_4 = lm(salary~sex+years_since_PhD+faculty_rank+discipline, data = faculty_salary)
+vif(salary_mod_4)
+summary(salary_mod_4)
+AIC(salary_mod_4)
+```
+
+```{r}
+salary_mod_5 = lm(salary~sex+years_faculty_service+faculty_rank+discipline+years_faculty_service*faculty_rank, data = faculty_salary)
+summary(salary_mod_5)
+
 ```
 
