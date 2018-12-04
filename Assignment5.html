@@ -541,9 +541,6 @@ non_post_doc_test = wilcox.test(doctoral_salary$men_employment,doctoral_salary$w
 ## data:  doctoral_salary$men_employment and doctoral_salary$women_employment
 ## V = 101, p-value = 0.002572
 ## alternative hypothesis: true location shift is not equal to 0</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>Exploring academic salaries for professors in U.S. colleges. Explore relationships between variables in the ‘Faculty salary data (2008 - 2009 survey)’ dataset. Develop a model describing faculty salary based on data for faculty sex, rank, years in current position, field, and number of years since doctoral degree was earned. You should make decisions regarding which variables should remain in your final model. Describe the results qualitatively and quantitatively (i.e., don’t just report the statistical results of the model – make sure you describe interesting findings in text). You can also discuss any concerns that you have with the model(s) you present, if any.</li>
-</ol>
 <pre class="r"><code>#Starting the linear model 
 salary_mod_1 = lm(salary~sex+years_faculty_service+faculty_rank+discipline, data = faculty_salary)
 summary(salary_mod_1)</code></pre>
@@ -591,6 +588,8 @@ vif(salary_mod_1)</code></pre>
 ## years_faculty_service 1.627110  1        1.275582
 ## faculty_rank          1.597441  2        1.124233
 ## discipline            1.029040  1        1.014416</code></pre>
+<pre class="r"><code>AIC(salary_mod_1)</code></pre>
+<pre><code>## [1] 9096.813</code></pre>
 <pre class="r"><code>#Making a model that excludes years
 salary_mod_2 = lm(salary~sex+faculty_rank+discipline, data = faculty_salary)
 summary(salary_mod_2)</code></pre>
@@ -615,6 +614,8 @@ summary(salary_mod_2)</code></pre>
 ## Residual standard error: 22640 on 392 degrees of freedom
 ## Multiple R-squared:  0.4469, Adjusted R-squared:  0.4412 
 ## F-statistic: 79.18 on 4 and 392 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>AIC(salary_mod_2)</code></pre>
+<pre><code>## [1] 9095.454</code></pre>
 <pre class="r"><code>salary_mod_3 = lm(salary~sex+years_faculty_service+discipline, data = faculty_salary)
 summary(salary_mod_3)</code></pre>
 <pre><code>## 
@@ -638,6 +639,8 @@ summary(salary_mod_3)</code></pre>
 ## Residual standard error: 27790 on 393 degrees of freedom
 ## Multiple R-squared:  0.1646, Adjusted R-squared:  0.1582 
 ## F-statistic: 25.81 on 3 and 393 DF,  p-value: 2.928e-15</code></pre>
+<pre class="r"><code>AIC(salary_mod_3)</code></pre>
+<pre><code>## [1] 9257.162</code></pre>
 <pre class="r"><code>faculty_sal_acoc = faculty_salary %&gt;% 
   filter(faculty_rank == &quot;AssocProf&quot;)
 faculty_sal_asst = faculty_salary %&gt;% 
