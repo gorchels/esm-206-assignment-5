@@ -210,10 +210,53 @@ post_doc_test = wilcox.test(doctoral_salary$men_postdoc,doctoral_salary$women_po
 post_doc_test
 non_post_doc_test
 ```
+
+
 ```{r}
+#boxplot of salaries
+
+#data is tidy format
+salary_tidy <- doctoral_salary %>% 
+  gather(emplo_type, salary, `men_employment`:`women_postdoc`)
+
+#boxplot code
+salary_box <- ggplot(salary_tidy, aes(x = emplo_type, y = salary)) +
+  geom_boxplot()
+#salary_box
+
+#boxplot employment
+salary_employ <- salary_tidy %>% 
+  filter(emplo_type == "men_employment"|
+         emplo_type == "women_employment")
+
+salary_employ_box <- ggplot(salary_employ, aes(x = emplo_type, y = salary)) +
+  geom_boxplot() +
+  theme_classic() +
+  scale_x_discrete(labels = c("Men", "Women")) +
+  ylab("Annual Salary (dollars)") +
+  xlab("Non-academic Employment")
+salary_employ_box
+
 
 ```
 
+```{r}
+#boxplot postdoc
+salary_postdoc <- salary_tidy %>% 
+  filter(emplo_type == "men_postdoc"|
+         emplo_type == "women_postdoc")
+
+salary_postdoc_box <- ggplot(salary_postdoc, aes(x = emplo_type, y = salary)) +
+  geom_boxplot(fill = "cyan3") +
+  theme_classic() +
+  scale_x_discrete(labels = c("Men", "Women")) +
+  ylab("Annual Salary (dollars)") +
+  xlab("Postdoc Employment")
+salary_postdoc_box
+```
+
+
+Part 4
 ```{r}
 #Starting the linear model 
 salary_mod_1 = lm(salary~sex+years_faculty_service+years_since_PhD+faculty_rank+discipline, data = faculty_salary)
