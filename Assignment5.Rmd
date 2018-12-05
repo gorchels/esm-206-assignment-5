@@ -16,6 +16,7 @@ library(kableExtra)
 library(effsize)
 library(stargazer)
 library(car)
+library(reshape2)
 
 #Reading in the data frames
 grad_enrollment = read_csv("Grad enrollment 1967 - 2015.csv")
@@ -132,24 +133,81 @@ f_phd_chi_all
 
 trim_number_all <- subset(female_absolute_field, rownames(f_phd_prop_all) %in% c("Female_phy_sci","Female_eng", "Female_ed","Female_art"))
 
-rownames(trim_number_all) <- c("Female_phy_sci","Female_eng","Female_ed","Female_art")
+pre_kable <- mutate(trim_number_all, Field = c("Physical & Earth Sciences","Engineering","Education","Arts & Humanities"))
+
+pre_kable_select <- select(pre_kable, "Field", "1985_Number","2000_Number","2015_Number")
+
+
+#rownames(trim_number_all) <- c("Female_phy_sci","Female_eng","Female_ed","Female_art")
 
 trim_prop_all <- subset(f_phd_prop_all, rownames(f_phd_prop_all) %in% c("Female_phy_sci","Female_eng", "Female_ed","Female_art"))
   
-chi_table_all <- kable(trim_number_all,
-                       col.name = c("1985", "2000", "2015"),
+chi_table_4 <- kable(pre_kable_select, col.names = c("Field","1985", "2000", "2015"), 
                        caption = "Changes in Fields of Study") %>% 
   kable_styling(c("striped","border"))  # %>% 
  
 
-chi_table_all
+chi_table_4
+
+
+
+lob_prop_final = as.data.frame(legal_lob) %>%
+  rbind(., c(386, 1282)) %>% 
+  mutate(Site = c("Arroyo Quemado", "Carpineria", "Isla Vista", "Mohawk", "Naples", "Total"),
+         AboveLimit_percentage = round(AboveLimit/(AboveLimit+BelowLimit), 2),
+         BelowLimit_percentage = round(BelowLimit/(AboveLimit+BelowLimit), 2),
+         Legal = paste(as.character(AboveLimit),"(",as.character(AboveLimit_percentage),")"),
+         Not_legal = paste(as.character(BelowLimit),"(",as.character(BelowLimit_percentage),")"),
+         Total = AboveLimit+BelowLimit) %>% 
+  select(Site, Legal, Not_legal, Total) %>% 
+  kable(col.name = c("Site", "Above Limit", "Below Limit", "Total")) %>% 
+  kable_styling()
+
+lob_prop_final
 ```
 
 
 
 ```{r}
+
 # This run will look at just the 4 specified fields
 
+female_field_4 <- filter(rev_phd_field, Field_of_study_and_sex %in% c("Female_phy_sci","Female_eng","Female_ed","Female_art"))
+
+# Note, I also removed "Female_all"
+
+# Now to remove the %'s
+
+female_absolute_field_4 <- select(female_field_4, "1985_Number", "2000_Number", "2015_Number") 
+
+f_4 <- as.data.frame(f_phd_prop_all_4) %>% 
+  mutate(., Field = c("Physical & Earth Sciences","Engineering","Education","Arts & Humanities"))
+
+f_5 <- f_4
+#colnames(f_5, c("1985_prop", "2000_prop", "2015_prop", "Field"))
+colnames(f_5)[1] <- "1985"
+colnames(f_5)[2] <- "2000"
+colnames(f_5)[3] <- "2015"
+
+f_6 <- merge(pre_kable_select,f_5,by="Field") 
+f_7 <- round(f_6$`1985_prop`,2)
+
+f_4_long <- melt(f_4, id.vars=c("Field"), value.name = "proportion")
+names (f_4_long) [2] <-paste("Year")
+
+f_5_long <- melt(f_5, id.vars=c("Field"), value.name = "Proportion")
+names (f_5_long) [2] <-paste("Year")
+
+rownames(female_absolute_field_4) <- c("Female_phy_sci", "Female_eng","Female_ed","Female_art")
+
+
+f_phd_prop_all_4 <- prop.table(as.matrix(female_absolute_field_4), 2)
+
+f_phd_chi_all_4 <- chisq.test(female_absolute_field_4)
+
+f_phd_chi_all_4
+
+# p-value = < 2.2 e -16 so DEFINETLY a significant difference
 
 ```
 
@@ -180,6 +238,41 @@ f_phd_t_chi_all <- chisq.test(female_absolute_field_t)
 f_phd_chi_all
 ```
 
+Ploting data
+
+```{r}
+ggplot(data = TTM, aes(x = Type.of.Behavior, y = Sample.Size, fill = Stage.of.Change)) + 
+    geom_bar()
+
+stack_bar <- ggplot(data = f_4, aes(x = c("1985_Number", "2000_Number", "2015_Number"), y = c("1985_Number", "2000_Number", "2015_Number"), fill = Field)) + 
+    geom_bar()
+
+stack_bar
+
+
+bar_stack <- table(f_4$`1985_Number`, f_4$`2015_Number`)
+barplot(counts, main="Car Distribution by Gears and VS",
+  xlab="Number of Gears", col=c("darkblue","red"),
+ 	legend = rownames(counts))
+
+
+bar <- barplot(f_phd_prop_all_4, xlab = "Year",col = 1:4)
+
+
+stacking_bars <- ggplot() +
+  geom_bar(aes(y = Proportion,
+               x = Year,
+               fill = Field),
+           data = f_5_long,
+           stat="identity") +
+  theme_classic() +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_fill_manual(values = c("chartreuse3","blue3","cyan3","brown2"), name = "Field of Study" ) 
+ 
+ 
+stacking_bars
+
+```
 
 
 3) Male and female salaries for starting postdoctoral and other employment positions (2015). Compare median salaries for male and female doctorate recipients in 2015. Answer these two questions:Does median salary differ significantly between male and female starting postdoc positions? Does median salary differ significantly between male and female PhD recipients in non-postdoc employment positions?
