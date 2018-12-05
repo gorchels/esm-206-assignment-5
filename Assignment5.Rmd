@@ -64,11 +64,15 @@ grad_m_scatter
 women_model <- lm(total_women ~ year, data = grad_enrollment)
 women_model
 summary(women_model)
+women_r <- cor.test(grad_enrollment$total_women, grad_enrollment$year)
+women_r
 
 #linear model for men
 men_model <- lm(total_men ~ year, data = grad_enrollment)
 men_model
 summary(men_model)
+men_r <- cor.test(grad_enrollment$total_men, grad_enrollment$year)
+men_r
 
 ```
 
@@ -89,12 +93,12 @@ grad_enrol_graph <- ggplot(grad_enrollment, aes(year)) +
   geom_point(aes(y = total_men, color = "Men")) +
   theme_classic() +
   geom_smooth(method = lm, se = TRUE, size = 0.5, (aes(y = total_women)), color = "turquoise") +
-  geom_smooth(method = lm, se = TRUE, size = 0.5, (aes(y = total_men)), color = "orange") +
+  geom_smooth(method = lm, se = TRUE, size = 0.5, (aes(y = total_men)), color = "coral2") +
   scale_x_continuous() +
-  labs(x = "Year", y = "Number of Graduate Students Enrolled") #need to fix ledgend and colors
+  labs(x = "Year", y = "Number of Graduate Students Enrolled")+ #need to fix ledgend and colors 
+  scale_color_discrete(name = "Gender", labels = c("Men", "Women"))
 
 grad_enrol_graph
-
 
 ```
 ##2) Shifts in female PhD recipients by field (1985, 2000, and 2015). 
@@ -218,24 +222,24 @@ f_phd_chi_all_4
 
 #phd_transpose$Field_of_study_and_sex <- factor(rev_phd_field$Field_of_study_and_sex)
 
-female_field_t <- select(phd_transpose, Field_of_study_and_sex, #%in%
-                         "Female_life_sci","Female_phy_sci","Female_math","Female_ss", "Female_eng","Female_ed","Female_art","Female_other")
+#female_field_t <- select(phd_transpose, Field_of_study_and_sex, #%in%
+                         #"Female_life_sci","Female_phy_sci","Female_math","Female_ss", #"Female_eng","Female_ed","Female_art","Female_other")
 
 # Note, I also removed "Female_all"
 
 # Now to remove the %'s
 
-female_absolute_field_t <- filter(female_field_t,Field_of_study_and_sex %in% c("1985_Number", "2000_Number", "2015_Number")) 
+#female_absolute_field_t <- filter(female_field_t,Field_of_study_and_sex %in% c("1985_Number", "2000_Number", "2015_Number")) 
 
-rownames(female_absolute_field_t) <- c("1985_Number","2000_Number", "2015_Number")
+#rownames(female_absolute_field_t) <- c("1985_Number","2000_Number", "2015_Number")
 
-phd_f_row <- select(female_absolute_field_t, "Female_life_sci":"Female_other")
+#phd_f_row <- select(female_absolute_field_t, "Female_life_sci":"Female_other")
 
-f_phd_t_prop_all <- prop.table(as.matrix(phd_f_row), 3)
+#f_phd_t_prop_all <- prop.table(as.matrix(phd_f_row), 3)
 
-f_phd_t_chi_all <- chisq.test(female_absolute_field_t)
+#f_phd_t_chi_all <- chisq.test(female_absolute_field_t)
 
-f_phd_chi_all
+#f_phd_chi_all
 ```
 
 Ploting data
@@ -277,17 +281,78 @@ stacking_bars
 
 3) Male and female salaries for starting postdoctoral and other employment positions (2015). Compare median salaries for male and female doctorate recipients in 2015. Answer these two questions:Does median salary differ significantly between male and female starting postdoc positions? Does median salary differ significantly between male and female PhD recipients in non-postdoc employment positions?
 
+```{r}
+post_doc_hist = ggplot(doctoral_salary, aes(x = men_postdoc))+
+  geom_histogram()
+post_doc_hist
+post_doc_qq = ggplot(doctoral_salary, aes(x = men_postdoc))+
+  geom_qq()
+#post_doc_qq
+```
+
 
 ```{r}
+
+#var.test(doctoral_salary$men_employment,doctoral_salary$women_employment) #Variances are not equal 
+#var.test(doctoral_salary$men_postdoc,doctoral_salary$women_postdoc) #Variances are not equal 
+
+non_post_doc_test = wilcox.test(doctoral_salary$men_employment,doctoral_salary$women_employment, paired = TRUE)
+
+post_doc_test = wilcox.test(doctoral_salary$men_postdoc,doctoral_salary$women_postdoc, paired = TRUE)
+
+post_doc_test
+non_post_doc_test
+```
+
+
+```{r}
+#boxplot of salaries
+
+#data is tidy format
+salary_tidy <- doctoral_salary %>% 
+  gather(emplo_type, salary, `men_employment`:`women_postdoc`)
+
+#boxplot code
+salary_box <- ggplot(salary_tidy, aes(x = emplo_type, y = salary)) +
+  geom_boxplot()
+#salary_box
+
+#boxplot employment
+salary_employ <- salary_tidy %>% 
+  filter(emplo_type == "men_employment"|
+         emplo_type == "women_employment")
+
+salary_employ_box <- ggplot(salary_employ, aes(x = emplo_type, y = salary)) +
+  geom_boxplot() +
+  theme_classic() +
+  scale_x_discrete(labels = c("Men", "Women")) +
+  ylab("Annual Salary (dollars)") +
+  xlab("Non-academic Employment")
+salary_employ_box
+
 
 ```
 
-4) Exploring academic salaries for professors in U.S. colleges. Explore relationships between variables in the ‘Faculty salary data (2008 - 2009 survey)’ dataset. Develop a model describing faculty salary based on data for faculty sex, rank, years in current position, field, and number of years since doctoral degree was earned. You should make decisions regarding which variables should remain in your final model. Describe the results qualitatively and quantitatively (i.e., don’t just report the statistical
-results of the model – make sure you describe interesting findings in text). You can also discuss any concerns that you have with the model(s) you present, if any.
+```{r}
+#boxplot postdoc
+salary_postdoc <- salary_tidy %>% 
+  filter(emplo_type == "men_postdoc"|
+         emplo_type == "women_postdoc")
 
+salary_postdoc_box <- ggplot(salary_postdoc, aes(x = emplo_type, y = salary)) +
+  geom_boxplot(fill = "cyan3") +
+  theme_classic() +
+  scale_x_discrete(labels = c("Men", "Women")) +
+  ylab("Annual Salary (dollars)") +
+  xlab("Postdoc Employment")
+salary_postdoc_box
+```
+
+
+Part 4
 ```{r}
 #Starting the linear model 
-salary_mod_1 = lm(salary~sex+years_faculty_service+faculty_rank+discipline, data = faculty_salary)
+salary_mod_1 = lm(salary~sex+years_faculty_service+years_since_PhD+faculty_rank+discipline, data = faculty_salary)
 summary(salary_mod_1)
 
 salary_mod_1
@@ -298,17 +363,25 @@ salary_mod_1
 plot(salary_mod_1)
 #hmmm it seems there is some heterdasicity, it also has some issues with residual normality 
 vif(salary_mod_1)
+AIC(salary_mod_1)
+
 ```
 
 ```{r}
 #Making a model that excludes years
 salary_mod_2 = lm(salary~sex+faculty_rank+discipline, data = faculty_salary)
 summary(salary_mod_2)
+AIC(salary_mod_2)
+plot(salary_mod_2)
+vif(salary_mod_2)
+
 ```
 
 ```{r}
-salary_mod_3 = lm(salary~sex+years_faculty_service+discipline, data = faculty_salary)
+salary_mod_3 = lm(salary~sex+faculty_rank+years_faculty_service+discipline, data = faculty_salary)
 summary(salary_mod_3)
+AIC(salary_mod_3)
+vif(salary_mod_3)
 ```
 ```{r}
 faculty_sal_acoc = faculty_salary %>% 
@@ -318,10 +391,24 @@ faculty_sal_asst = faculty_salary %>%
 faculty_sal_prof = faculty_salary %>% 
   filter(faculty_rank == "Prof")
 
-interaction_graph = ggplot(faculty_salary, aes(x = years_faculty_service, y = salary))+
-  geom_point(data = faculty_sal_acoc, aes(x = years_faculty_service, y = salary))+
-  geom_point(data = faculty_sal_asst, aes(x = years_faculty_service, y = salary))
-#Struggling here
-#interaction_graph
+```
+```{r, results='asis'}
+constillations = stargazer(salary_mod_2, type = "html")
+constillations 
+```
+
+
+
+```{r}
+salary_mod_4 = lm(salary~sex+years_since_PhD+faculty_rank+discipline, data = faculty_salary)
+vif(salary_mod_4)
+summary(salary_mod_4)
+AIC(salary_mod_4)
+```
+
+```{r}
+salary_mod_5 = lm(salary~sex+years_faculty_service+faculty_rank+discipline+years_faculty_service*faculty_rank, data = faculty_salary)
+summary(salary_mod_5)
+
 ```
 
