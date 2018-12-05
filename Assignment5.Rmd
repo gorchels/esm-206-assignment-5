@@ -276,6 +276,7 @@ stacking_bars <- ggplot() +
  
 stacking_bars
 
+
 ```
 
 
